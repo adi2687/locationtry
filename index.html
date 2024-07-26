@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .main {
+            width: 20%;
+            height: auto;
+            border: 1px solid red;
+        }
+
+        button {
+            border: 2px solid white;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 16px;
+            font-weight: bold;
+            width: 60%;
+            margin-left: 18%;
+            cursor: pointer;
+        }
+
+        .stop {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error"></div>
+    <div class="main">
+        <button class="start">Start tracking</button>
+        <div class="location">
+            <p></p>
+            <div></div>
+        </div>
+        <button class="stop">Stop Tracking</button>
+    </div>
+    <script>
+        const error = document.querySelector(".error");
+        const latDisplay = document.querySelector(".location p");
+        const lonDisplay = document.querySelector(".location div");
+        let watchID;
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                watchID = navigator.geolocation.watchPosition(showPosition, showError);
+            } else {
+                error.textContent = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            if (position && position.coords) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                latDisplay.textContent = "Latitude: " + lat;
+                lonDisplay.textContent = "Longitude: " + lon;
+            } else {
+                error.textContent = "Position object is undefined or missing 'coords'.";
+            }
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    error.textContent = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    error.textContent = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    error.textContent = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    error.textContent = "An unknown error occurred.";
+                    break;
+            }
+        }
+
+        function stopTracking() {
+            if (watchID) {
+                navigator.geolocation.clearWatch(watchID);
+                watchID = null;
+                console.log("Tracking stopped.");
+            }
+        }
+
+        const start = document.querySelector(".start");
+        const stop = document.querySelector(".stop");
+
+        start.addEventListener("click", () => {
+            getLocation();
+        });
+
+        stop.addEventListener("click", () => {
+            stopTracking();
+        });
+    </script>
+</body>
+
+</html>
