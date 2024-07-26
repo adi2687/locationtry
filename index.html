@@ -34,6 +34,13 @@
         .stop {
             margin-top: 20px;
         }
+
+        @media screen and (max-width:700px) {
+            .main {
+                border: 2px solid grey;
+                width: 100vw;
+            }
+        }
     </style>
 </head>
 
@@ -48,7 +55,7 @@
         <button class="stop">Stop Tracking</button>
     </div>
     <script>
-        const error = document.querySelector(".error");
+        const errorElement = document.querySelector(".error");
         const latDisplay = document.querySelector(".location p");
         const lonDisplay = document.querySelector(".location div");
         let watchID;
@@ -57,7 +64,7 @@
             if (navigator.geolocation) {
                 watchID = navigator.geolocation.watchPosition(showPosition, showError);
             } else {
-                error.textContent = "Geolocation is not supported by this browser.";
+                errorElement.textContent = "Geolocation is not supported by this browser.";
             }
         }
 
@@ -68,23 +75,23 @@
                 latDisplay.textContent = "Latitude: " + lat;
                 lonDisplay.textContent = "Longitude: " + lon;
             } else {
-                error.textContent = "Position object is undefined or missing 'coords'.";
+                errorElement.textContent = "Position object is undefined or missing 'coords'.";
             }
         }
 
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    error.textContent = "User denied the request for Geolocation.";
+        function showError(err) {
+            switch (err.code) {
+                case err.PERMISSION_DENIED:
+                    errorElement.textContent = "User denied the request for Geolocation.";
                     break;
-                case error.POSITION_UNAVAILABLE:
-                    error.textContent = "Location information is unavailable.";
+                case err.POSITION_UNAVAILABLE:
+                    errorElement.textContent = "Location information is unavailable.";
                     break;
-                case error.TIMEOUT:
-                    error.textContent = "The request to get user location timed out.";
+                case err.TIMEOUT:
+                    errorElement.textContent = "The request to get user location timed out.";
                     break;
-                case error.UNKNOWN_ERROR:
-                    error.textContent = "An unknown error occurred.";
+                case err.UNKNOWN_ERROR:
+                    errorElement.textContent = "An unknown error occurred.";
                     break;
             }
         }
